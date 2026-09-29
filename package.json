@@ -1,0 +1,14 @@
+{
+  "name": "owl-media-sdk",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=@owl-media/web",
+    "build": "npm run build --workspace=@owl-media/web",
+    "lint": "npm run lint --workspace=@owl-media/web"
+  }
+}
