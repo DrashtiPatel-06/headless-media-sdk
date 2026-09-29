@@ -10,8 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@owl-media/media-react": "*",
-    "@owl-media/media-ui-react": "*",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },

@@ -25,6 +25,8 @@ docs/                    SDK and component usage guides
 
 Dependency direction is `web -> media-react -> media-core`, plus `web -> media-ui-react`. The native packages are separate siblings. Neither UI package imports the core or a wrapper. The native packages are source-level libraries only; this take-home does not include a mobile app or React Native runtime.
 
+`apps/web` is the only npm workspace, so Netlify detects a single deployable project. The web app loads the SDK packages straight from their TypeScript source through aliases in `apps/web/vite.config.ts` and `paths` in `apps/web/tsconfig.app.json`. To use another package from the web app, add it to both places.
+
 ## Implemented features
 
 - Photo search and curated photos; video search and popular videos.
