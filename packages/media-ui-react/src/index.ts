@@ -1,4 +1,4 @@
-import { useId, useState, type FormEvent } from 'react'
+import { useId, useRef, useState, type FormEvent, type TouchEvent } from 'react'
 
 export interface SearchFieldOptions {
   value: string
@@ -76,5 +76,62 @@ export function useReel({ onNext, onPrevious }: ReelOptions) {
     getReelProps: () => ({ role: 'region' as const, 'aria-label': 'Video reel' }),
     getNextButtonProps: () => ({ type: 'button' as const, onClick: onNext, 'aria-label': 'Next video' }),
     getPreviousButtonProps: () => ({ type: 'button' as const, onClick: onPrevious, 'aria-label': 'Previous video' }),
+  }
+}
+
+export interface ReelSwiperOptions<T> {
+  items: T[]
+  getKey: (item: T) => string | number
+  onActiveItemChange: (item: T, index: number) => void
+  initialIndex?: number
+}
+
+export function useReelSwiper<T>({ items, getKey, onActiveItemChange, initialIndex = 0 }: ReelSwiperOptions<T>) {
+  const [activeIndex, setActiveIndex] = useState(() => Math.max(0, Math.min(initialIndex, items.length - 1)))
+  const touchStartY = useRef<number | null>(null)
+  const activeItem = items[activeIndex]
+
+  function selectIndex(index: number): void {
+    if (items.length === 0) return
+    const nextIndex = Math.max(0, Math.min(index, items.length - 1))
+    if (nextIndex === activeIndex) return
+    setActiveIndex(nextIndex)
+    onActiveItemChange(items[nextIndex], nextIndex)
+  }
+
+  function handleTouchStart(event: TouchEvent<HTMLElement>): void {
+    touchStartY.current = event.touches[0]?.clientY ?? null
+  }
+
+  function handleTouchEnd(event: TouchEvent<HTMLElement>): void {
+    const startY = touchStartY.current
+    const endY = event.changedTouches[0]?.clientY
+    touchStartY.current = null
+    if (startY === null || endY === undefined || Math.abs(startY - endY) < 40) return
+    selectIndex(activeIndex + (startY > endY ? 1 : -1))
+  }
+
+  return {
+    items,
+    activeItem,
+    activeIndex,
+    getReelProps: () => ({
+      role: 'region' as const,
+      'aria-label': 'Media reel',
+      onTouchStart: handleTouchStart,
+      onTouchEnd: handleTouchEnd,
+      onKeyDown: (event: React.KeyboardEvent<HTMLElement>) => {
+        if (event.key === 'ArrowDown') selectIndex(activeIndex + 1)
+        if (event.key === 'ArrowUp') selectIndex(activeIndex - 1)
+      },
+    }),
+    getItemProps: (item: T, index: number) => ({
+      key: getKey(item),
+      role: 'group' as const,
+      'aria-label': `Item ${index + 1} of ${items.length}`,
+      'aria-current': index === activeIndex ? 'true' as const : undefined,
+    }),
+    getPreviousButtonProps: () => ({ type: 'button' as const, disabled: activeIndex <= 0, onClick: () => selectIndex(activeIndex - 1), 'aria-label': 'Previous item' }),
+    getNextButtonProps: () => ({ type: 'button' as const, disabled: activeIndex >= items.length - 1, onClick: () => selectIndex(activeIndex + 1), 'aria-label': 'Next item' }),
   }
 }
