@@ -15,6 +15,11 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
+    "paths": {
+      "@owl-media/media-core": ["../../packages/media-core/src/index.ts"],
+      "@owl-media/media-react": ["../../packages/media-react/src/index.ts"],
+      "@owl-media/media-ui-react": ["../../packages/media-ui-react/src/index.ts"]
+    },
 
     /* Linting */
     "noUnusedLocals": true,

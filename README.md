@@ -26,6 +26,8 @@ media-ui-native (independent)
 
 `media-core` owns the Pexels API client, shared types, errors, cache, and local activity events. `media-react` and `media-native` adapt that core to platform hooks/providers. The UI packages are independent: they accept consumer data/callbacks and provide headless prop-getters without SDK imports or mandatory styling. The web app is the composition layer joining `media-react` and `media-ui-react`. The native packages are source-level libraries; this repo does not include a mobile app or device runtime.
 
+`apps/web` is the only npm workspace, so Netlify detects a single deployable project. The web app loads the SDK packages straight from their TypeScript source through aliases in `apps/web/vite.config.ts` and `paths` in `apps/web/tsconfig.app.json`. To use another package from the web app, add it to both places.
+
 ## Implemented features
 
 - Photo search and curated photos; video search and popular videos.
