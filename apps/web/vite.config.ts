@@ -7,6 +7,10 @@ const pkg = (name: string) => fileURLToPath(new URL(`../../packages/${name}/src/
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  build: {
+    outDir: '../../dist',
+    emptyOutDir: true,
+  },
   resolve: {
     // SDK packages are consumed from source so the web app is the only npm workspace
     alias: {
